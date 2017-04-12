@@ -1,0 +1,531 @@
+
+
+Test Harness: Operational Concept Document Ease to Manual Testing
+
+
+Shishir Bijalwan9/14/2016
+ 
+Contents
+Executive Summary	3
+INTRODUCTION	5
+Concept	5
+Test Execution Engine	6
+Test Script Repository	6
+Advantages	6
+Uses, User and Graphical User Interface	7
+Uses	7
+Users	8
+Project Manager:	8
+Developer	9
+Quality Assurance Engineer	11
+T.A. / Instructor	12
+STRUCTURE AND PARTITIONING	14
+Client Side Packages:	14
+Repository Side Packages	17
+Test Harness Side Packages	20
+KEY APPLICATION ACTIVITIES	24
+Client Side Activities	24
+Out Going Message Activities	25
+Incoming Message Activities	26
+Repository side Activities	27
+Test Harness Side Activities	30
+Critical Issues	33
+1.	Same code is used by many Test Drivers:	33
+2.	Client sending Message before starting of server:	33
+3.	When to ask for logs:	33
+4.	File Transfer from Repository to Test Harness:	33
+5.	Calculating latency:	34
+6.	Security over WCF channel:	34
+7.	Security Issue	34
+8.	Demonstration to TA/Instructor:	34
+Conclusion	35
+Appendix	36
+File Manager	36
+AppDomain Demo	37
+References	38
+
+
+
+
+
+
+
+
+
+
+
+
+
+Executive Summary
+
+With ever growing dependency on software in the modern world, it has become indispensable to have a bug free software system. In order to develop bug free software one need to rigorously test the software through each and every possible scenario for which the software has been developed. Concept of testing was developed to achieve this objective of bug free software. 
+ 	To understand the need utility of Test Harness let us take an example. Suppose you work in a big software company and developing banking software for a company.               	
+Then it can be divided into major system. Each major system will have many sub system, which in turn will have many libraries and packages. So for example we test each package 10 times. This will make us test each sub system 50 time, which will make us test each major system 250 time and will make us test the whole Application around 1250 times. Testing so many times will bring down the efficiency of the team down.  In order to automate this redundant task we have created a test harness, where a person can test the whole application on just a single click.
+      The Test Harness has been designed for the use for type of users Developer, Quality Assurance engineer, Project Manager and TA/Instructor. For demonstrating features of the test harness to the TA/instructor we have designed a test executive package. By executing this package the TA/Instructor will be able to grade our project.
+	We have divided the portioning of this project into three parts for making thing clearer. We have created three package diagrams:
+1.	client side Packages
+2.	Repository side Packages
+3.	Test Harness side Packages
+We have divided the key application activities also into three parts based on three different machines. We have used the windows communication foundation (wcf) for communication between three different machines and used xml body messages for communication.
+ During the development of this test harness we have taken special care of some critical issues which are vital for proper functioning of the application. Some of them are:
+•	Case when same code is being used by many test drivers. In this scenario if one of the test drivers completes the execution early and deletes the code files. Then the system will throw an exception.
+•	As client, Test Harness and the Repository are working on a different system. We need to keep a track that one should not start sending message to other till it has started listening.
+•	Every time a test Harness needs a file it needs to ask repository for it. In case the user is running the same test many times, the file transfer part can reduce efficiency as it is consuming CPU cycles to get the same file again and again.
+.	 
+
+
+
+
+
+
+
+
+INTRODUCTION
+Concept
+A Test Harness can be understood as a tool which provides facility for integration testing in an application. It provides the feature of automation in testing and generation of test reports for the user. One can formulate a test harness as
+Test Harness= Test Environment + Test cases
+A test harness consists of two major parts: the test execution engine and test script repository.
+Test Execution Engine
+The purpose of Test execution engine is to run tests over an application. It does not have any information regarding the test cases. In order to do its task the test harness needs to have two type of information:
+•	Test Specification
+•	Test Cases
+	The test specification is the sequence of steps which needs to be carried out in order to achieve the task of testing i.e. will be taken care in our test driver. Let’s take an example of testing the feature of sending email using Microsoft Outlook. The flow of testing will be “Opening the login page => Enter credential => Compose a mail=> Click send”. If the test engine does not know about the sequence of these steps then the test data is of no use. The sequence of these steps needs to be correct. Suppose the test engine tries to login to the page before even opening the login page. In that case we won’t be able to test the application. 
+	The test data helps in confirming the behavior of system for a valid input. It also helps in verification of the behavior in case of an invalid input. In the example above we can test the application once by giving the correct credentials, In that case the test engine will be able to login and send email. In order to verify the behavior for invalid input we must provide incorrect credentials. 
+
+Test Script Repository
+Software repository is used for storage of code with proper version maintenance. It is easy to maintain source code if the application is being developed by an individual, but it is not manageable if an application is being developed by a team at different locations. By the use of Script repository one can handle source code versions as well as solve the problem of conflicts arising due to the submission of overlapping modification.
+	In this project we will use the repository to get the code base, integrate it with the code to be tested and then test the integrated software using test drivers. 
+
+Advantages
+The use of test harness by a team provides various benefits in the software development cycle:
+•	The facility to test the complete system in case any component been modified; increases the quality of the software.
+•	By eliminating the need of manual testing to minimum, we are able to increases the productivity of the team.
+•	It makes the progress of a project more presentable with the feature of generation of reports.
+•	Eliminates the dependency on individual staff once the test case has been designed. 
+•	Helps in testing an application in the conditions similar to the one for which it has been developed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Uses, User and Graphical User Interface
+Uses
+The test harness provides the facility to test an application in an environment for which it has been developed. This facility helps the development team in providing a better stable product to the user. An example of that can be the testing of a Banking application using test harness. It will help the developer to test the application thoroughly and fix the bugs. In case the developer doesn’t have test harness facility for testing thoroughly then a bug might be left and the user will have pay very big amount for it as it is a banking application.
+	In the current project we have focused on doing regression testing on any component which has been modified or newly created by the user. It also gives the facility of monitoring the current status of the project with the help of the reports published.
+
+Users
+Project Manager:
+The main responsibility of a project manager is:
+•	Manage resources: The test harness helps the project manager in managing his resources. He can have a better visualization by seeing the reports that which component of the project has issues and will need extra resource. As well as helps in keeping a note of the resources doing a great job. Acknowledgement of good resources is a very important part of being a manager.
+•	Handling Client:  The toughest job for the manager is to pacify the needs of a client. In general a client is a person without any technical knowledge about software development. They are more concerned about the outcome rather than the internal working. In this case again a test harness helps the manager. With the help of a report the project manager can explain the status of the project in terms of facts and figures to the client.
+Graphical User Interface
+ 
+The Project manager will use the log request tab of the GUI to get the logs of any past test done by his team. The Get Log List button will ask the Repository for the logs list present in the repository. Once the list fetched it will display the file names in first view. Then the project manager can select a file and click on Get log button. Then again the client side will request for the data in that file. Once it has the data it will display report in below format inside the second view of the GUI. (It will not be display on console. We just wanted to show what data will be displayed in GUI)
+ 
+
+  It has the information about the application for which it has been published. It tells about the various modules in the application, the developer, QA engineer assigned to that module and the status of the module. It also tells about the percentage of the system that is up and running.
+IMPACT ON DESIGN
+The major impact on the design for project manager was:
+1.	Adding the feature of fetching past records of test logs. For doing so we had to make a xml database in the Repository, provide the list of records present in the repository and provide facility to fetch data in those xml files from repository.
+2.	Another impact was to create reports from the data of the xml. In case of project manager the data should be in a presentable way and lucid for the client.
+Developer
+ To build any application we need to have many developers in a team. The location of the developers can be at different states or countries. The bigger the team more it becomes difficult to have them on the same page. This is where the test harness comes into picture to help a developer. It helps the developer to build a code with the surety that his piece of code will not make any other code in application unstable as well as help him to run all the old test cases for that part.
+                So whenever a developer develops or updates a code, he will test that code with the help of test harness. The test harness will integrate that code with application code in the repository and run the test cases against it. If it fails any of the test cases the developer will come to know about the test cases which are failing and help him to fix the bugs.
+Graphical User Interfaces: For the developer the current application will have three features:
+1.	File Download: This will help the developer to download files from the repository and do enhancement on them.
+ 
+2.	File Upload: This option will help the developer to upload files into repository once the enhancement is completed and the user want to test the changes after it.
+ 
+3.	Test Run: This is the main feature of this application. The user can browse and select the test driver file he wants to run. The Test harness will execute the driver and results will be displayed in the second view of the tab.
+ 
+
+Below data will be displayed in the second view of the Test run tab. (It will not be display on console. We just wanted to show what data will be displayed in GUI) 
+. In the image we can see the developer has tested the Login module. By checking the status of various test drivers will help the developer in figuring and fixing of the bugs. 
+IMPACT ON DESIGN
+We designed the Test Harness in such a way to give flexibility to the developer of having as many test drivers. In order to provide this flexibility we have used the dynamic polymorphism property of C# by creating ITest interface which allows the user to create as many test drivers that inherits ITest interface. In order to support the concept of multiple users we have used dynamic linked libraries so a single code can be used at multiple places.
+Quality Assurance Engineer
+The role of a Quality Assurance (Q.A.) engineer is to monitor each phase of software development to ensure that the software adheres to the standards set by the client. The Test harness is a very important tool for a Q.A. engineer as it helps him to monitor development phases as wells as helps him to test the code against the standards set by the client. In case he finds a particular part of the code not following the standards. He can get the information about the developer and let him know about the issues. 
+	Once the developer has completed the bug fixing, The QA engineer can just click on a button and run the test again to make sure that the standards are being satisfied now. It also helps him in record maintenance to track the progress of the project.
+Graphical User Interface:  The QA engineer will be using two tabs of the GUI one to run test and other to get the past records.
+1.	Get past records:  
+2.	Run Test:
+ 
+In case the Run Test feature is used by a QA engineer the result will be presented in a different way than the developer. For QA results will be displayed in a different way in comparison to the developer. The QA view will have below data:
+ 
+
+It has information about the module, name of developer; the test driver used and status about the test. A single page can help the Q.A. engineer to be sure that software being developed is following the standards requested by the client.
+IMPACT ON DESIGN
+The Q.A engineer has to ensure that the standards asked by client are being maintained in the development phase. In order to help the Q.A engineer monitor that we have provide the facility of publishing report. The facility of publishing reports again requires a database where old test results must be saved, a database driver and functions to generated report in proper format. The format should be easy for him to extract information from it at a glance. 
+T.A. / Instructor
+The main purpose of the T.A. /Instructor for using this application is to evaluate its functionality against the requirements stated in project 2. 
+IMPACT ON DESIGN
+To make the task easier for them, we have created a package called Test Executive using which we will be demonstrate all the requirements that have been implemented.  
+	We will create two files run.bat and compile.bat for them, which will help them to compile and run the application. It will require minimum efforts from the side of the user. Once the application starts it will start printing the results on the console in the same order as given on the project requirement page. The results in console will look file below:
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+STRUCTURE AND PARTITIONING
+
+In order to make the picture clear and to understand the responsibilities at a better level we have divided the partitioning into three parts: 
+Client Side Packages:
+
+ 
+
+ClientUI
+This purpose of this package is to provide the graphical user interface (UI) to the user. The user interface will have four tabs:
+•	For uploading files to repository.
+•	For downloading files from repository.
+•	For Running Test.
+•	For Requesting Test logs.
+
+
+
+
+Message Passing
+The user interface will take the input from the user and pass input as well as the instructions to the client package using Message passing package.  Some basic inputs that will be passed to the client package from UI are:
+•	Author Name
+•	URL of the Target server
+•	Test Driver name
+•	Code to be tested name
+•	File name that is to be uploaded or downloaded.
+Client
+Once Client package has the user input and the instruction from the ClientUI package, it will make use of XmlMsgCreator package to create an xml message and put them in the blocking queue (SenderQueue) for sending message. Client package will send xml message to TestHarness Server or the Repository server, based on the type of the request using ClientChannel&HostProxy package which provide the proxy object of the target server. The sendMessage function of ClientChannel&HostProxy package will dequeue request from SenderQueue and send it to host.
+	The client package will work in two phases. First has been discussed above i.e. sending xml message to the target server. The second phase deals with receiving of messages from TestHarness or the Repository. The ClientChannel&HostProxy package again helps the client package in creating a channel to listen all incoming request. Once the listener has started the ClientService package helps the client in putting the incoming messages into the received message blocking queue (ReceiveQueue). After the request is in ReceiveQueue a thread will dequeue it which uses functionality of XmlMsgParser package to parse the xml message and display the results to the user in User Interface.
+XmlMsgCreator
+ This package helps the client package to create xml messages which the client can use to communicate with the Test Harness and the Repository. The client package passes the data it has received from the ClientUI package to the XmlMsgCreator package. The XmlMsgCreator package uses XDocument facility of dot net to generate the xml body message. Once it has created the message it will put it into the SenderQueue of the client package.
+ClientChannel&HostProxy
+This package serves to major jobs:
+•	Creating proxy of the Target Server and send Message:  The ClientChannel&HostProxy package de-queues the Xml message from the SenderQueue of the client package and parses it with the help of XmlMsgParser to get the target URL. Then it uses this URL to create the remote proxy of the server and send xml messages to it.
+
+•	Creating channel for client: This functionality helps our client packages to receive messages and files sent to it over the communication channel. Once we have created the host it can be used by any other server to send messages to client package.
+
+Iservice
+This interface is the service contract which application will be using for all the communication that will happen between the TestHarness, Repository and the Client.  The sendMessage function helps these three servers to pass messages amongst them and help client uses services of the Test Harness and the Repository.
+ClientService
+This package contains the concrete implementation of the Iservice interface. Whenever Test Harness or the repository wants to send a message to the client, they use the client proxy to call the sendMessage function of the ClientService class. SendMessage function takes string as input argument i.e. the message repository or test harness wants to send. The sendMessage function then puts this message into the ReceiveQueue of the client package.
+XmlMsgParser
+The job of the XmlMsgParser is to help the client package get the information from the xml message. This package uses the XDocument facility to get all the information from the message which is dequeued from the Receive message queue. Using the information given by the XmlMsgParser the client package displays the output to the user through User Interface.
+BlockingQueue
+This package helps the Client to have a thread safe storage for the incoming and outgoing messages. It uses monitor and locks to make it thread safe. If a thread tries to dequeue an empty blocking queue it will go into wait mode which helps in easy management of the threads.
+FileManager
+The FileManager package it used by the client package for searching the code files which needs to be send to the repository for check in. The FileManager has the utility to find a file under a root directory, help client to locate the file which needs to check in.
+Repository Side Packages
+ 
+
+Repository
+This is the main package of the Repository system. The Task of the repository package is to control all other packages in the system to get the job done. We can divide the functionality of the Repository package into two parts for better understanding:
+•	For Incoming Messages: The Repository takes help of the RepoChannel&HostProxy package for creation of repository channel, which the client and the Test harness can use to send messages and file to it. Once the channel is open RepositoryService package helps client and test harness to put incoming messages into blocking queue (ReceiveQueue) of the Repository. Then Repository de-queues the message use the XmlMsgParser package to get the information from it. Based on the type of the Request the Repository passes control to LogRequestHandler or CodeRequestHandler package for taking care of the request.
+•	For Out Messages: Once the LogRequestHandler or CodeRequestHandler have done the required task using the FileManager package for file system operation. The Repository transfers information returned by them either the test log or the check-in/File Transfer completion information to the XmlMsgCreator. The XmlMsgCreator creates the xml message which is put into the send message blocking queue (senderQueue).  Once the message is in the queue, the Repository us the RepoChannel&HostProxy package to send the message to the target server using proxy object.
+
+RepoChannel&HostProxy
+This package serves to major jobs:
+•	Creating proxy of the Target Server and send Message:  The RepoChannel&HostProxy package de-queues the Xml message from the SenderQueue of the repository package and parses it with the help of XmlMsgParser to get the target URL. Then it uses this URL to create the remote proxy of the server and send xml messages to it.
+
+•	Creating channel for Repository: This functionality helps our repository packages to receive messages and files sent to it over the communication channel. Once we have created the host it can be used by any other server to send messages to repository package.
+Iservice
+This interface is the service contract which application will be using for all the communication that will happen between the TestHarness, Repository and the Client.  The sendMessage function helps these three servers to pass messages amongst them and help client uses services of the Test Harness and the Repository. Iservice of Repository has two more functions download and upload which will help the user to check in file and both test harness & user download file.
+RepositoryService
+This package contains the concrete implementation of the Iservice interface. Whenever Test Harness or the client wants to send a message to the repository, they use the Repository proxy to call the sendMessage function of the RepositoryService class. SendMessage function takes string as input argument i.e. the message client or test harness wants to send. The sendMessage function then puts this message into the ReceiveQueue of the Repository package. It also has the service for file upload and downloads. The user can use the upload facility to upload a file and use the download facility to download a file.
+XmlMsgCreator
+This package helps the repository package to create xml messages which the repository can use to communicate with the Test Harness and the client. The repository package passes the data it has received from the LogRequestHandler and CodeRequestHandler to the XmlMsgCreator package. The XmlMsgCreator package uses XDocument facility of dot net to generate the xml body message. Once it has created the message it will put it into the SenderQueue of the repository package.
+
+
+XmlMsgParser
+The job of the XmlMsgParser is to help the repository package get the information from the xml message. This package uses the XDocument facility to get all the information from the message which is dequeued from the Receive message queue. Using the information given by the XmlMsgParser the repository decides type of request and then passes information to LogRequestHandler and CodeRequestHandler package.
+BlockingQueue
+This package helps the repository to have a thread safe storage for the incoming and outgoing messages. It uses monitor and locks to make it thread safe. If a thread tries to dequeue an empty blocking queue it will go into wait mode which helps in easy management of the threads.
+FileManager
+The FileManager package it used by the LogRequestHandler and code Request handler for searching the code files and the logs in the repository. The FileManager has the utility to find a file under a root directory, which help them to locate the file they are searching.
+CodeRequestHandler
+This package helps the Repository to take care of the request for check in or sending it to the client or the Test Harness. For file sending request it uses the FileManager package to locate the code file in the repository and then use this location in download function of the Repository service class. In case it is a checking request, it will save the file in the repository and passes check in successful message to repository package.
+LogRequestHandler
+This package helps the repository package in handling the log request from the TestHarness. The request can be of two types:
+•	Log file creation
+•	Old log file retrieval
+It uses the FileManager package in order to get the location of the log file in case of log file retrieval request. Based on the type of request LogRequestHandler uses XmlFileCreator package or the XmlFileParser package to do the task. Once the task is completed it passes the information to the Repository package.
+
+
+
+XmlFileCreator
+This package helps storing the test results given by the test harness in form of xml files. The xml messages passed to the repository contains the test results in form of xml. This package uses the XDocument utility of the dot net framework for creation of xml files from the xml messages passed to the repository.
+XMLFileParser
+This package helps the LogRequestHandler package to get information extracted from the xml file which is present in the database. The information extracted from the XMLFileParser is returned to the Repository package which is used for the creation of the xml message that is send to the client.
+
+Test Harness Side Packages
+ 
+
+
+TestHarness
+The TestHarness package is the controlling package of the Test Harness system. In order to use the services of the Test Harness the user send the xml message request to the TestHarness. TestHarness takes help of the THChannel&HostProxy package for the creation of the communication channel hosted by Harness. Once the channel has been stablished the client using the proxy object of test harness calls the sendMessage function of the TestHarnessService package. The sendMessage function places the message into the receive message blocking queue (receiveQueue). 
+        Once the Message is in the queue, the TestHarness uses will create a task with the help of appDomainManager package and put it in the Thread pool. Once the thread has started working on task it will parse the xml message to get required DLL information and use them to get them from the Repository. Once all the required files have been transferred to the TestHarness, the child thread will create object loader class in child app Domain and load the dll files. It will run the test drivers in child appDomain and save the results in the Result queue of the thread pool. 
+ Once the result is in the result queue the appDomainManager will take that message and pass to the test harness, which will use this for xml message creation with the help of XmlMsgCreator package and then enqueue SenderQueue. Once the messages are in the SenderQueue the TestHarness package uses THChannel&HostProxy package to send the message placed in the SenderQueue to the respective client and Repository.
+THChannel&HostProxy
+This package serves to major jobs:
+•	Creating proxy of the Target Server and send Message:  The THChannel&HostProxy package de-queues the Xml message from the SenderQueue of the test harness package and parses it with the help of XmlMsgParser to get the target URL. Then it uses this URL to create the remote proxy of the server and send xml messages to it.
+
+•	Creating channel for TestHarness: This functionality helps our TestHarness packages to receive messages and files sent to it over the communication channel. Once we have created the host it can be used by any other server to send messages to TestHarness package.
+
+Iservice
+This interface is the service contract which application will be using for all the communication that will happen between the TestHarness, Repository and the Client.  The sendMessage function helps these three servers to pass messages amongst them and help client uses services of the Test Harness and the Repository. It also has a DownloadFile function which will help to download files from other machine to local filesystem
+TestHarnessService
+This package contains the concrete implementation of the Iservice interface. Whenever Repository or the client wants to send a message to the test harness, they use the TestHarness proxy to call the sendMessage function of the TestHarnessService class. SendMessage function takes string as input argument i.e. the message client or repository wants to send. The sendMessage function then puts this message into the ReceiveQueue of the TestHarness package.
+XmlMsgCreator
+This package helps the TestHarness package to create xml messages which the TestHarness can use to communicate with the Repository and the client. The TestHarness package passes the data it has received from the AppDomainManager (test results) to the XmlMsgCreator package. The XmlMsgCreator package uses XDocument facility of dot net to generate the xml body message. Once it has created the message it will put it into the SenderQueue of the TestHarness package.
+XmlMsgParser
+The job of the XmlMsgParser is to help the TestHarness package get the information from the xml message. This package uses the XDocument facility to get all the information from the message which is dequeued from the Receive message queue. Using the information given by the XmlMsgParser the TestHarness decides type of request and then passes information to AppDomainManager package or creates log request for the Repository.
+BlockingQueue
+This package helps the TestHarness to have a thread safe storage for the incoming and outgoing messages. It uses monitor and locks to make it thread safe. If a thread tries to dequeue an empty blocking queue it will go into wait mode which helps in easy management of the threads.
+ITest Interface
+This package has two major functions. First is the doTest() function and a second is the getLog() function. The purpose of the creation of this package is to handle the object of any test driver at run time using dynamic polymorphism. The Loader class will exploit this property to create object of different test driver and execute them.
+AppDomainManager
+The AppDomainManager package takes care of creating the child app domains and the execution of the test drivers in it. The appDomain manager creates a task and put in thread Pool. It dequeues  message from receive blocking queue of the Test Harness, parses it with XmlMsgParser  and check if required files are present in cache, if not will request the Repository to give the files. Then create the object of loader class and load the assemblies. Once done it will execute the loader. After which it will take the result and pass it to TestHarness package for reply message creation.
+Thread Pool
+We have designed this package to help us in making the process of test execution in parallel. For this we have two blocking queue in thread pool. One takes delegates (for task) and other string (for result). We can decide the number of threads we want in the thread pool based on the number of cores in our machine. The AppDomainManager package creates task and put them into the thread pool and once these task are executed. The results are put into the result blocking queue.
+Loader
+The loader package has been designed to helps the Test harness to run the test drivers in separate child app domains. The App domain manager creates the object of Loader class in a child app Domain asynchronously with the help of thread pool. Once all required libraries have been loaded the manager calls the execute function of the loader class, which runs the test driver. The execute function will return the results which will be put in the result queue of the thread pool.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+KEY APPLICATION ACTIVITIES  
+
+The activities of this application are actually the activities of its three major components. In this section we will discuss about the activities of these components one by one:
+Client Side Activities
+ 	 
+
+Out Going Message Activities
+Passing Input (through UI)
+The user will use the graphical user interface to select the type of service he wants to use and provide the required input to the backhand system. The User inputs will be of 4 basic types:
+•	Command-> Check-in : Data -> File name
+•	Command->Download : Data-> File name
+•	Command-> Log Retrieval : Data-> Test Driver name
+•	Command-> Test Request : Data-> Test Driver and dependent dll files
+Decision Making
+Based on the input provided by the user the client package decides its further processing. The client check what type of command has been passes by the user and based on it; use the XmlMsgCreator package to generate different type of messages.
+•	Repository operation : Check-in or download or Log Request
+•	Test Harness operation :  Test Request
+Xml Message Creation & En-queue
+In this part the Client package uses the information provided by the user to create an xml message using the XmlMsgCreator package. Below is a sample xml message:
+<TestRequest>
+  <author>Shishir</author>
+  <Target> http://localhost:8095/BasicService </Target>
+  <sender>http://localhost:8080/BasicService</sender>
+    <testDriver>TestDriverThree.dll</testDriver>
+    <library>CodeToBeTested1.dll</library> 
+    <fullLogs>true</fullLogs>
+</TestRequest>
+Some of the information in the above message are task dependent, But some are generic and will be part of any xml message:
+•	Author : This tells the information about the user using the application.
+•	Target :  It helps the application in creation the proxy object of the target machine.
+•	Sender :  It used by the target machine to reply back to the requesting machine.
+Once the message has been created it is put in the Sender Queue of the Client package.
+File Upload and Download
+When the user wants to upload a file into the repository or wants to download file from the repository. The client uses the proxy address of the Repository to call the file download and upload operation of the Repository. This task is taken care by the ClientChannel&RemoteProxy package.
+Message de-queue and Sending
+Our client system will have a thread running which will constantly try to de-queue message from sender queue (blocking queue) of the client. The messages dequeue and sending part is taken care by the ClientChannel&RemoteProxy package. Once ClientChannel&RemoteProxy has a message it will use XmlMsgParser package to get the information about the target server. Using this target URL it creates the proxy object to send messages to the target. 
+
+Incoming Message Activities
+Listening incoming message and En-queue
+At the time of client system creation the client package will create a client channel with the help of ClientChannel&RemoteProxy package. Every client will have its own URL which will be used by other machines to send message to it. Once the channel has been created any incoming message will come through sendMessage function of the ClientService package. Other machine will use proxy object of the client to call sendMessage function of ClientService package. The sendMessage function will place the message passed in its argument into the blocking queue (ReceiveQueue) of the client.
+De-queue and parsing of messages
+There will be a thread which will constantly try to de-queue ReceiveQueue of the client. Once it finds a message it will use XmlMsgParser to extract information from it. Then client package will use this information to display the output to the user on the graphical user interface. The message can have any of the following information:
+•	Test Logs
+•	Check-in successful message
+•	Downloaded file information
+
+
+
+
+
+
+
+
+
+
+
+Repository side Activities
+ 
+Listening incoming message and En-queue
+At the time of repository system creation the repository package will create a repository channel with the help of RepositoryChannel&RemoteProxy package. Repository will have its own URL which will be used by other machines to send message to it. Once the channel has been created any incoming message will come through sendMessage function of the RepositoryService package. Other machine will use proxy object of the repository to call sendMessage function of RepositoryService package. The sendMessage function will place the message passed in its argument into the blocking queue (ReceiveQueue) of the repository.
+De-queue, parsing and Decision Making
+There will be a thread which will constantly try to de-queue ReceiveQueue of the repository. Once it finds a message it will use XmlMsgParser to extract information from it. Then repository package will use this information to decide which type of request it is and to whom should it assign the task:
+•	Log Request: In case it is a log request repository will the use the LogRequestHandler package to handle the request. The LogRequestHandler will make use of XmlFileCreator or the XmlFileParser package to create an xml file in case it is new log file request or parse an existing xml file in case it is an old log file retrieval request.
+•	File Check-in or Download Request: In case it is a code file request the repository the CodeRequestHandler package to do the task. 
+Check-in, Directory and metadata creation
+When the Repository gets a check-in request it will use the CodeRequestHandler package to take care of it. The CodeRequestHandler creates a new folder for every new file that has come for check-in. It uses the file name and the timestamp to create the folder and place the file from the temporary folder to the folder created. It will also create a metadata file which will hold information about the dependent files.
+Locating log file and Code file
+In case the request is for log file or code file download. In this case the CodeRequestHandler and the LogRequestHandler will use the FileManager package to locate the requested log file and the code file in the repository. Once it gets the location of the file they will pass this information to the RepositoryChannel&RemoteProxy package so that it can be used to send file stream to the client.
+Creation of Xml log files
+When the Test Harness request the repository to save test results in the database, it send the result in form of xml message. The LogRequestHandler uses the extracted information from this message for creation of an xml file with help of XmlFileCreator package. It uses the file name, author name and timestamp for naming the xml file to make names unique.
+Xml Message Creation & En-queue
+In this part the Repository package uses the information provided by the LogRequestHandler and CodeRequestHandler to create an xml message using the XmlMsgCreator package. Below is a sample xml message which was created for replying to a log request:
+<LogRequest>
+  <author>Shishir</author>
+  <Target> http://localhost:8095/BasicService </Target>
+  <sender>http://localhost:8080/BasicService</sender>
+    <testDriver>TestDriverThree.dll</testDriver>
+    <Passed>False</Passed>
+    <ExtraLogs>Divide by zero exception</ExtraLogs>
+</ LogRequest>
+Some of the information in the above message are task dependent, But some are generic and will be part of any xml message:
+•	Author : This tells the information about the user using the application.
+•	Target :  It helps the application in creation the proxy object of the target machine.
+•	Sender :  It used by the target machine to reply back to the requesting machine.
+Other information apart from these could be check-in seuccess information or file not found message.Once the message has been created it is put in the Sender Queue of the Repository package.
+Message de-queue and Sending
+Our Repository system will have a thread running which will constantly try to de-queue message from sender queue (blocking queue) of the Repository. The messages dequeue and sending part is taken care by the RepositoryChannel&RemoteProxy package. Once RepositoryChannel&RemoteProxy has a message it will use XmlMsgParser package to get the information about the target server. Using this receiver URL it creates the proxy object to send messages to the target. 
+Test Harness Side Activities
+ 
+
+Listening incoming message and En-queue
+At the time of TestHarness system creation the TestHarness package will create a repository channel with the help of THChannel&RemoteProxy package. Repository will have its own URL which will be used by other machines to send message to it. Once the channel has been created any incoming message will come through sendMessage function of the TestHarnessService package. Other machine will use proxy object of the TestHarness to call sendMessage function of TestHarnessService package. The sendMessage function will place the message passed in its argument into the blocking queue (ReceiveQueue) of the TestHarness.
+De-queue and put Task in thread pool
+At the time of creation of the test harness one thread will be continuously running and will try to de-queue the ReceiveQueue of the TestHarness. Once this thread gets a message it will create a task with the help of appDomainManager package and put it inside the thread pool. The task will do below operations
+•	Checking DLL required in cache else get DLL from Repository
+•	Create child app domain and load dll in it.
+•	Execute the test driver in child app domain
+•	Save results in result queue of the thread pool
+The use of above concept will help test harness to take care of multiple test requests at same time i.e. make system capable of parallel processing
+Checking for DLLs and Download from Repository
+Our test harness will maintain a cache which will contain 50 recently used files to increase the efficiency of the Test Harness. So when a thread picks up a task in the thread pool, it will check if the file is present in the cache, If so it will create a temporary folder with test driver name and timestamp. Then copy that file in that folder.
+	In case the file is not present in the Test harness cache. It will download the file from the Repository concrete service function download function in the cache directory. During the process of downloading in the cache it will also check the count of file in cache. If it is more than 50, it will delete old files to make the count 50. Once the file is in cache it will create a temporary folder with test driver name and timestamp. Then copy that file in that folder.
+DLL loading and Test Execution
+Once the Test Harness has all required file it will create an object of Loader class and load all the DLL files used load function of the loader class. After that it will call execute function the loader class which will execute the test driver. Inside the execute function we create object of test driver. It will use ITest interface reference variable to save the object of test driver.  Using this reference variable child thread will call doTest() function to test the code and then use getLog() function to retrieve logs.
+Placing Results in Thread pool Queue
+After the execution of the test driver we have two type of information. One the test result and the other is the extra log part. The thread save them together as a string and place them in the result blocking queue of the thread pool. We place them in this queue as this is thread safe and many threads can place the results into it without conflict.
+De-queue results, Create message and En-queue SenderQueue
+Once the result are in the result queue of the thread pool test harness will dequeue it and use the data to create a xml message for the Client as well as the Repository to make a record of the result. The test harness uses the XmlMsgCreator package for the creation of the xml message. Once the message is ready the test harness will put the message in the SenderQueue.
+File Upload and Download
+When test harness wants to download file from repository. The test harness uses the proxy address of the Repository to call the file download operation of the Repository service class. This task is taken care by the THChannel&RemoteProxy package of TestHarness
+Message de-queue and Sending
+Test Harness will have a thread running which will constantly try to de-queue message from sender queue (blocking queue) of the Harness. The messages dequeue and sending part is taken care by the THChannel&RemoteProxy package. Once THChannel&RemoteProxy has a message it will use XmlMsgParser package to get the information about the target server. Using this receiver URL it creates the proxy object to send messages to the target. 
+
+
+
+
+
+
+
+Critical Issues
+
+1.	Same code is used by many Test Drivers: Suppose we have three test drivers which uses are dependent on same code suppose CodeToBeTested_1. So if all of the test drivers are running at same time they will take the file from repository and place in a temporary directory in Test Harness. Now suppose one of them finishes early and tries to delete CodeToBeTested_1 as its execution is over, then other will fail.
+Solution: To solve this issue we copy the files from repository to Test Harness not in a single directory. But we create an individual directory for each test driver and the name constitute of the timestamp and the driver. Now if execution of one test driver is over it won’t delete the file of other.        
+2.	Client sending Message before starting of server: As the client, Test Harness and the Repository are running on a separate machine. A situation can come that the client has started and servers are still booting. In such a situation if the client sends a message an exception will be thrown as the Host channel is still no created.
+             Solution: To solve this issue we must do two things before start sending messages. We can have two buttons one to start listening and other to connect to the server. First we should start listening at a particular port then connect button should get activated. After that we should click on connect. Till the local machine is not able to connect our message sending button should be deactivated. Once both the things are done then only we will be able to start sending message.
+3.	When to ask for logs: As we know that the test results are being saved in the Repository and Test is happening in test harness. So a situation can happen when the user has requested for test request and might ask logs from repository before the test has completed. So the repository won’t have logs and the request will be wasted.
+Solution: We can solve this problem in a very simple way. Instead of giving user the option of manually typing the name of the log, we have an option of get log list. This function get log list will ask the Repository which all logs does it have and give the user the list. Now if the log has still not been made in the repository the user won’t get in the list and can’t ask for it. We can maintain a vector with log file names at Repository to give the log list to GUI.
+4.	File Transfer from Repository to Test Harness: As we know that the test harness will be asking repository for the DLL files. Suppose as a developer I am making change in a code, I will test it many times. So the test harness will need to get the file again and again from the Repository, which is doing work which uses resources for no good. Can we do it in a more efficient way?
+               Solution: We can increase the efficiency of the system by just keeping the last used 50 files in the Test Harness as cache. Now whenever test harness has a test request it can first check in cache for the file and if not found then only request it from the Repository. 
+5.	Calculating latency: As the part of the project we have to calculate the latency of a test request. In most of the modern Operating system (windows and UNIX) the time we can calculate is in millisecond. If we use them to calculate latency we will have a very bad accuracy. 
+Solution: We can use High resolution timer. It allows us to do calculation at micro seconds level, which will have a very good accuracy in latency calculation.
+6.	Security over WCF channel:  We are sending our code from user machine to the repository using WCF communication. Someone can get access to channel and can get access to all the code files being transferred over the channel.
+Solution: We have currently used basichttp binding which has no security as it is a college project. But if it would have been an industry project, we should have used the wsHttpBinding. It would have provided us security over the communication channel. It provides Message security with Windows authentication.
+7.	Security Issue: We use dynamic link libraries in the working of test harness. It is a big security concern. A hacker can easily place a malicious dll file in the folder from where we are fetching the test driver files. If this file gets executed the hacker can get access to the repository.
+          Solution: To solve this issue we should keep a check if the class given in the dll file has inherited from the ITest interface. If it has not inherited from the ITest interface then it should not be executed.  We can also provide a login facility to verify the user accessing the Test harness and place the test harness on a server which is be accessible only through Virtual Private Network.
+8.	Demonstration to TA/Instructor: As this is a GUI application it was a big question how to demonstrate to the TA that we have met the requirements without making him click at anything other than the compile.bat and run.bat file? 
+                 Solution: For this we have designed a package test executive which will act as a second client and will demonstrate all the requirements on the console. So now in this case we will have 4 consoles One client GUI with console, second the console client 2, third the Test Harness and fourth the Repository. The console client will connect with the Test harness and repository to use it services and will print results on console. Good thing about adding the test executive is we will demonstrate that our server can handle multiple clients too.
+
+
+
+
+
+
+Conclusion
+
+The Test harness developed as the part of this project makes the task of adding test cases and run test easy. It has reduced the repetitive task of manually doing tests after every change. Using Test Harness user can run number of tests repeatedly without much effort. This gives the opportunity to do regression tests on each and every feature of the application, which in turn helps us to deliver a higher quality cost-effective product to our customer in less time.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Appendix 
+
+File Manager
+
+
+Result & Conclusion: On running the File Manager application with command line path pointing to the TestingFolder we get all the dll files present inside this root directory. We have put a specific condition because of which no other file apart from ones with dll extension are being displayed.
+	If we check the code we will see that in getDLLFileList() function we are finding files in the base directory first. After that we are searching for the sub folders inside it.Once we have the array of the sub directory we are iterating the array and calling the getDLLFileList with sub folder path as argument. 
+
+
+
+
+
+
+
+
+
+
+
+AppDomain Demo
+
+ 
+Result & Conclusion: From the snap shot we can see the Test result demonstrates following:
+•	Firstly the name of the main app Domain in which the application is running.
+•	After that we have demonstrated execution of two test drivers in two child domains ChildDomain1 and ChildDomain2.
+•	We have printed the bool value returned by the doTest() function and the logs received from the getlog() function in each execution separately.
+From this demo we are able to understand how we can execute two test drivers in same thread with total isolation from each other. It is a very important feature in a condition where we want two codes not to be able to reach each other at all.
+
+
+
+
+
+
+
+
+
+References
+
+1.	Wikipedia https://www.wikipedia.org/
+
+2.	 Test Automation: A Project Management Perspective http://www.uploads.pnsqc.org/2013/papers/t-035_Pulla_paper.pdf
+
+3.	 TESTING FRAMEWORKS http://www.cs.colorado.edu/~kena/classes/5828/s12/presentations/testing-frameworks-by-gayat.html
+
+
